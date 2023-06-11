@@ -19,14 +19,10 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@floating-ui/react": "^0.23.1",
     "framer-motion": "^10.12.12",
     "react": "^18.2.0",
-    "react-aria": "^3.24.0",
     "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.4.1",
-    "react-router-dom": "^6.10.0",
-    "react-stately": "^3.22.0"
+    "react-router-dom": "^6.10.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.5.1",

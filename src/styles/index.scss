@@ -8,3 +8,7 @@
     font-family: Inter, system-ui, sans-serif;
   }
 }
+
+#app {
+  @apply h-screen w-full bg-slate-100 text-slate-950 dark:bg-slate-950 dark:text-slate-100;
+}
