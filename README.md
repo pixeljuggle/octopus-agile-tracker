@@ -1,6 +1,8 @@
-# Vite Boilerplate
+# Vite Boilerplate ⚡
 
-This boilerplate project has been configured with all of the tools required to create a React Application using **TypeScript** and **TailwindCSS** with Vite.
+This boilerplate project has been configured with all of the tools required to create a React Application using **TypeScript**, **TailwindCSS** and **Vite**.
+
+This is heavily inspired by [Bulletproof React](https://github.com/alan2207/bulletproof-react).
 
 ## Technologies
 
@@ -36,7 +38,7 @@ npm run dev
 npm run storybook
 ```
 
-## Table Of Contents:
+## More
 
 - [Project Configuration](docs/project-configuration.md)
 - [Style Guide](docs/style-guide.md)
@@ -44,4 +46,5 @@ npm run storybook
 - [Components And Styling](docs/components-and-styling.md)
 - [API Layer](docs/api-layer.md)
 - [Testing](docs/testing.md)
+- [Commit Linting](docs/commitlint-config.md)
 - [Additional Resources](docs/additional-resources.md)
