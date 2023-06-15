@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 export function useLocalStorage(key: string, initialValue: object) {
   const [storedValue, setStoredValue] = useState(() => {
@@ -28,9 +28,13 @@ export function useLocalStorage(key: string, initialValue: object) {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.localStorage.setItem(key, JSON.stringify(storedValue));
   }, [storedValue]);
+
+  // useLayoutEffect(() => {
+  //   window.localStorage.setItem(key, JSON.stringify(storedValue));
+  // }, []);
 
   return [storedValue, setValue, removeValue];
 }
