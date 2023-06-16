@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { API_KEY_64 } from 'config';
+import { USE_API_KEY } from 'config';
+import { useSettings } from 'features/settings/providers/SettingsProvider';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { UnknownObject } from 'types';
 import { average, minMax } from 'utils';
@@ -7,42 +8,57 @@ import { average, minMax } from 'utils';
 export const useRates = () => {
   const [rates, setRates] = useLocalStorage('rates', { results: [] });
 
-  const getRates = () => {
-    const headers = new Headers();
-    headers.append('Authorization', `Basic ${API_KEY_64}`);
+  const { obus } = useSettings();
 
-    const requestOptions = {
-      method: 'GET',
-      headers: headers,
-    };
-
-    const now = new Date().toDateString();
-
-    const periodFrom = new Date(`${now} 01:00`).getTime();
-    const periodFromString = new Date(periodFrom).toISOString();
-
-    const page_size = '96';
-
-    const params: UnknownObject = { period_from: periodFromString, page_size: page_size };
-
-    for (const key in params) {
-      if (!params[key]) {
-        delete params[key];
+  const getRates = (page_size = 96, apiKey = '') => {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (USE_API_KEY && !Boolean(apiKey || obus.apiKey)) {
+        console.log({ apiKey, obus: obus.apiKey });
+        reject('Invalid API key.');
+        return;
       }
-    }
 
-    // eslint-disable-next-line node/no-unsupported-features/node-builtins
-    const formattedQueryParams = new URLSearchParams(params as any).toString();
+      const headers = new Headers();
+      if (USE_API_KEY) {
+        headers.append('Authorization', `Basic ${btoa(apiKey || obus?.apiKey)}`);
+      }
 
-    const url = `https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-G/standard-unit-rates/?${formattedQueryParams}`;
-    fetch(url, requestOptions)
-      .then((response) => response.json())
-      .then((res: any) => {
-        if (Array.isArray(res?.results)) {
-          setRates(res);
+      const requestOptions = {
+        method: 'GET',
+        headers: headers,
+      };
+
+      const now = new Date().toDateString();
+
+      const periodFrom = new Date(`${now} 01:00`).getTime();
+      const periodFromString = new Date(periodFrom).toISOString();
+
+      const params: UnknownObject = { period_from: periodFromString, page_size: page_size };
+
+      for (const key in params) {
+        if (!params[key]) {
+          delete params[key];
         }
-      })
-      .catch((error) => console.log('error', error));
+      }
+
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      const formattedQueryParams = new URLSearchParams(params as any).toString();
+
+      const url = `https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-G/standard-unit-rates/?${formattedQueryParams}`;
+      await fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((res: any) => {
+          if (Array.isArray(res?.results)) {
+            setRates(res);
+            resolve(res);
+          } else {
+            reject(res?.detail ?? 'Something went wrong!');
+          }
+        })
+        .catch((error) => reject(error?.message ?? error));
+    });
   };
 
   const minMaxRange = minMax(rates.results, 'value_inc_vat');

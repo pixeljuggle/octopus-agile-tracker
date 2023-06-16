@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 const useDarkMode = () => {
   const darkMode = () => {
     document.body.classList.add('dark');

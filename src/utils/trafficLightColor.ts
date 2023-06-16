@@ -1,5 +1,3 @@
-import { UnknownObject } from 'types';
-
 type RGBColorType = { red: number; green: number; blue: number };
 
 const green: RGBColorType = {
