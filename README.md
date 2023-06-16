@@ -6,6 +6,7 @@
 ![ESLint](https://img.shields.io/badge/linter-eslint-4B32C3?style=flat&logo=eslint)
 ![Prettier](https://img.shields.io/badge/formatter-prettier-F8BC45?style=flat&logo=prettier)
 ![Vite](https://img.shields.io/badge/build-vite-A855F7?style=flat&logo=vite)
+
 View current incoming Octopus Energy Agile rates
 
 ## Getting Started
