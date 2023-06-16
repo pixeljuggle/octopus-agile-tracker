@@ -31,7 +31,9 @@ export const App = () => {
     if (!obus?.apiKey) {
       setSettingsOpen(true);
     }
+    getRates();
   }, []);
+
   return (
     <div className="flex h-screen w-screen flex-col items-center p-8 font-poppins transition-colors">
       <div className="flex h-full w-full max-w-[500px] flex-col flex-nowrap justify-between">
