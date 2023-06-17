@@ -5,6 +5,21 @@
 @layer base {
   html {
     @apply bg-electric-violet-900;
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 0.8rem;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      @apply bg-electric-violet-900 hover:bg-electric-violet-800;
+    }
   }
 }
 
