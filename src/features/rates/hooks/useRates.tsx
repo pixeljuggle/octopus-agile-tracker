@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { USE_API_KEY } from 'config';
+import dayjs from 'dayjs';
 import { useSettings } from 'features/settings/providers/SettingsProvider';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { UnknownObject } from 'types';
@@ -51,8 +52,21 @@ export const useRates = () => {
         .then((response) => response.json())
         .then((res: any) => {
           if (Array.isArray(res?.results)) {
-            setRates(res);
-            resolve(res);
+            const sorted = {
+              ...res,
+              results: res?.results
+                .sort((a: UnknownObject, b: UnknownObject) => {
+                  return new Date(a.valid_from).getTime() - new Date(b.valid_from).getTime();
+                })
+                .map((e: UnknownObject) => ({
+                  ...e,
+                  rate: e.value_inc_vat,
+                  timestamp: new Date(e.valid_from).getTime(),
+                  date: dayjs(e.valid_from).format('D MMM HH:mm'),
+                })),
+            };
+            setRates(sorted);
+            resolve(sorted);
           } else {
             reject(res?.detail ?? 'Something went wrong!');
           }

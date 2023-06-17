@@ -6,3 +6,4 @@ export * from './Logo/OctopusLogo';
 export * from './Logo/OctopusMascot';
 export * from './Icons/ArrowDownIcon';
 export * from './Icons/ArrowUpIcon';
+export * from './Graph/SimpleGraph';

@@ -1,9 +1,8 @@
-import { ArrowDownIcon, ArrowUpIcon, Header, TrafficLightRate } from 'components';
+import { ArrowDownIcon, ArrowUpIcon, Header, OctopusMascot, SimpleGraph, TrafficLightRate } from 'components';
 import { USE_API_KEY } from 'config';
 import dayjs from 'dayjs';
 import { RatesMinMax, RatesTable, useRates } from 'features/rates';
-import { SettingsDialog } from 'features/settings';
-import { useSettings } from 'features/settings/providers/SettingsProvider';
+import { SettingsDialog, useSettings } from 'features/settings';
 import { useLayoutEffect, useState } from 'react';
 import { UnknownObject } from 'types';
 
@@ -57,6 +56,9 @@ export const App = () => {
           <div className="px-4">
             <Header />
           </div>
+          <div className="px-4">
+            <SimpleGraph data={rates} min={min} max={max} />
+          </div>
           {Array.isArray(rates) && rates.length ? (
             <>
               <div className="my-8">
@@ -68,19 +70,23 @@ export const App = () => {
             <div className="mx-4 my-6 rounded  border border-amber-500 px-3 py-2 font-semibold text-amber-500">No Data</div>
           )}
         </div>
-
-        <div className="flex gap-4 px-2 py-8" id="footer">
-          <button className=" rounded px-2 py-2 text-xs text-heliotrope-500 " onClick={() => getRates()}>
-            Refresh Data
-          </button>
-          {USE_API_KEY ? (
-            <>
-              <button className="rounded px-3 py-2 text-xs text-heliotrope-500 " onClick={() => setSettingsOpen(true)}>
-                Set API Key
-              </button>
-              <SettingsDialog open={isSettingsOpen} setOpen={setSettingsOpen} onClose={() => getRates()} />
-            </>
-          ) : null}
+        <div className="flex justify-between  px-2 py-8">
+          <section className="flex gap-4 font-semibold" id="footer-left">
+            <button className=" rounded px-2 py-2 text-xs text-heliotrope " onClick={() => getRates()}>
+              Refresh Data
+            </button>
+            {USE_API_KEY ? (
+              <>
+                <button className="rounded px-3 py-2 text-xs text-heliotrope " onClick={() => setSettingsOpen(true)}>
+                  Set API Key
+                </button>
+                <SettingsDialog open={isSettingsOpen} setOpen={setSettingsOpen} onClose={() => getRates()} />
+              </>
+            ) : null}
+          </section>
+          <section id="footer-right">
+            <OctopusMascot size={2} />
+          </section>
         </div>
       </div>
     </div>

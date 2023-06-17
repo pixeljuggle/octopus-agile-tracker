@@ -32,9 +32,6 @@ export const RatesTable = ({ cols, rates }: RatesTablePropType): ReactElement =>
             const now = new Date().getTime();
             return new Date(e.valid_to).getTime() > now;
           })
-          .sort((a: UnknownObject, b: UnknownObject) => {
-            return new Date(a.valid_from).getTime() - new Date(b.valid_from).getTime();
-          })
           .map((row: UnknownObject, i: number) => {
             return (
               <tr key={i} className="border-b border-gray-800 ">
