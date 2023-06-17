@@ -24,11 +24,12 @@ export const SimpleGraph = ({ data, min, max }: SimpleGraphPropTypes) => {
   }, []);
 
   return (
-    <div ref={ref} className="w-full">
+    <div ref={ref} className="w-full text-[0.7rem] text-slate-400">
       <LineChart width={rect.width} height={200} data={data}>
-        <YAxis range={[10, 40]} domain={[Math.floor(min), Math.ceil(max)]} hide={true} axisLine={false} />
         <XAxis dataKey="timestamp" hide={true} axisLine={false} type="number" domain={[data.at(0)?.timestamp, data.at(-1)?.timestamp]} />
+        <YAxis domain={[Math.floor(min), Math.ceil(max)]} hide={true} axisLine={false} unit="p" />
         <Tooltip
+          position={{ y: 0 }}
           cursor={{ stroke: '#5EEAF4', strokeWidth: 1.5 }}
           contentStyle={{ backgroundColor: '#111827' }}
           itemStyle={{ color: '#818cf8' }}
@@ -41,4 +42,8 @@ export const SimpleGraph = ({ data, min, max }: SimpleGraphPropTypes) => {
   );
 };
 
+const Label = (props) => {
+  console.log(props);
+  return null;
+};
 // stroke="#94a3b8"
