@@ -23,6 +23,8 @@ export const SimpleGraph = ({ data, min, max }: SimpleGraphPropTypes) => {
     };
   }, []);
 
+  if (!data.length) return null;
+
   return (
     <div ref={ref} className="w-full text-[0.7rem] text-slate-400">
       <LineChart width={rect.width} height={200} data={data}>
@@ -41,9 +43,3 @@ export const SimpleGraph = ({ data, min, max }: SimpleGraphPropTypes) => {
     </div>
   );
 };
-
-const Label = (props) => {
-  console.log(props);
-  return null;
-};
-// stroke="#94a3b8"
