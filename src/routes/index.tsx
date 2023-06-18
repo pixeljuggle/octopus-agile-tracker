@@ -1,94 +1,44 @@
-import { ArrowDownIcon, ArrowUpIcon, Header, OctopusMascot, SimpleGraph, TrafficLightRate } from 'components';
-import { USE_API_KEY } from 'config';
-import dayjs from 'dayjs';
-import { RatesMinMax, RatesTable, useRates } from 'features/rates';
-import { SettingsDialog, useSettings } from 'features/settings';
-import { useLayoutEffect, useState } from 'react';
-import { UnknownObject } from 'types';
+import { Header } from 'components';
+import { Footer } from 'components/Footer/Footer';
+import { Rates } from 'features/rates';
+import { Outlet, useRoutes } from 'react-router-dom';
 
-export const App = () => {
-  const { rates, getRates, min, max, avg } = useRates();
-  const { obus } = useSettings();
-  const [isSettingsOpen, setSettingsOpen] = useState(false);
-
-  const renderArrows = (value: number) => {
-    if (value === min) {
-      return <ArrowDownIcon size={1} width={2.5} className=" text-green-500" />;
-    } else if (value === max) {
-      return <ArrowUpIcon size={1} width={2.5} className=" text-red-500" />;
-    } else {
-      return null;
-    }
-  };
-  const cols = [
+export const Routes = () => {
+  const appRoutes = [
     {
-      path: 'valid_from',
-      label: 'Date / Time',
-      thClassName: 'w-32 whitespace-nowrap',
-      content: (row: UnknownObject) => dayjs(row.valid_from).format('D MMM HH:mm'),
-    },
-    {
-      path: 'valid_from',
-      label: '',
-      content: (row: UnknownObject) => <span className="flex items-center gap-2">{renderArrows(row.value_inc_vat)}</span>,
-    },
-    {
-      path: 'value_inc_vat',
-      label: 'Rate ',
-      thClassName: 'flex flex-row flex-nowrap items-center justify-end gap-3',
-      content: (row: UnknownObject) => {
-        return <TrafficLightRate value={row.value_inc_vat} min={min} max={max} />;
-      },
+      element: <Layout />,
+      children: [
+        {
+          path: '/',
+          element: <Rates />,
+        },
+        {
+          path: '/settings',
+          element: <>settings</>,
+        },
+        {
+          path: '*',
+          element: <Rates />,
+        },
+      ],
     },
   ];
 
-  useLayoutEffect(() => {
-    if (!obus?.apiKey) {
-      setSettingsOpen(true);
-    }
-    getRates();
-  }, []);
+  const element = useRoutes(appRoutes);
 
+  return element;
+};
+
+export const Layout = () => {
   return (
-    <div className="flex h-screen w-screen flex-col items-center p-8 font-poppins transition-colors">
-      <div className="flex h-full w-full max-w-[500px] flex-col flex-nowrap justify-between">
-        <div className="" id="content">
-          <div className="px-4">
-            <Header />
-          </div>
-          <div className="px-4">
-            <SimpleGraph data={rates} min={min} max={max} />
-          </div>
-          {Array.isArray(rates) && rates.length ? (
-            <>
-              <div className="my-8">
-                <RatesMinMax min={min} max={max} avg={avg} />
-              </div>
-              <RatesTable cols={cols} rates={rates} />
-            </>
-          ) : (
-            <div className="mx-4 my-6 rounded  border border-amber-500 px-3 py-2 font-semibold text-amber-500">No Data</div>
-          )}
-        </div>
-        <div className="flex justify-between  px-2 py-8">
-          <section className="flex gap-4 font-semibold" id="footer-left">
-            <button className=" rounded px-2 py-2 text-xs text-heliotrope " onClick={() => getRates()}>
-              Refresh Data
-            </button>
-            {USE_API_KEY ? (
-              <>
-                <button className="rounded px-3 py-2 text-xs text-heliotrope " onClick={() => setSettingsOpen(true)}>
-                  Set API Key
-                </button>
-                <SettingsDialog open={isSettingsOpen} setOpen={setSettingsOpen} onClose={() => getRates()} />
-              </>
-            ) : null}
-          </section>
-          <section id="footer-right">
-            <OctopusMascot size={2} />
-          </section>
-        </div>
-      </div>
-    </div>
+    <>
+      <main className="w-full">
+        <Header />
+        <section className="h-full">
+          <Outlet />
+        </section>
+      </main>
+      <Footer />
+    </>
   );
 };

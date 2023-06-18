@@ -25,6 +25,25 @@
   }
 }
 
+body {
+  @apply bg-electric-violet-950 text-slate-100;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+}
 #app {
-  @apply h-screen w-screen overflow-y-auto overflow-x-hidden bg-electric-violet-950 text-slate-100;
+  @apply bg-electric-violet-950 px-5 py-5 text-slate-100;
+  max-width: 31.25rem;
+  flex-grow: 1;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
 }

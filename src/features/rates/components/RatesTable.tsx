@@ -19,7 +19,7 @@ export const RatesTable = ({ cols, rates }: RatesTablePropType): ReactElement =>
         <tr className="border-b border-gray-800 ">
           {cols.map((col: TableColType, i: number) => {
             return (
-              <th key={i} scope="col" className={`px-4 py-3 ${col?.thClassName ?? ''}`}>
+              <th key={i} scope="col" className={`py-3 ${col?.thClassName ?? ''}`}>
                 {col.label}
               </th>
             );
@@ -37,7 +37,7 @@ export const RatesTable = ({ cols, rates }: RatesTablePropType): ReactElement =>
               <tr key={i} className="border-b border-gray-800 ">
                 {cols.map((col: TableColType, i: number) => {
                   return (
-                    <td key={i} className="px-4 py-3">
+                    <td key={i} className=" py-3">
                       {col?.content && typeof col.content === 'function' ? col.content(row) : row[col.path]}
                     </td>
                   );

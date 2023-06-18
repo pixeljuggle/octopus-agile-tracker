@@ -1,6 +1,6 @@
 export const Header = ({ className = '' }) => {
   return (
-    <div className={className}>
+    <header className={className}>
       <h2 className="flex text-xl opacity-50">
         <p className="font-semibold">octopus</p>
         <p className="font-thin">energy</p>
@@ -9,6 +9,6 @@ export const Header = ({ className = '' }) => {
         <p className="font-semibold">agile</p>
         <p className="font-thin">tracker</p>
       </h1>
-    </div>
+    </header>
   );
 };
