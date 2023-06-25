@@ -1,5 +1,5 @@
 import { OctopusMascot } from 'components/Logo/OctopusMascot';
-import { useRates } from 'features/rates';
+import { useRates } from 'hooks/useRates';
 
 export const Footer = () => {
   const { getRates } = useRates();

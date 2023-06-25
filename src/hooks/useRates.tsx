@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { USE_API_KEY } from 'config';
 import dayjs from 'dayjs';
 import { useSettings } from 'features/settings/providers/SettingsProvider';
 import { useLocalStorage } from 'hooks/useLocalStorage';
@@ -15,14 +14,9 @@ export const useRates = () => {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // eslint-disable-next-line no-extra-boolean-cast
-      if (USE_API_KEY && !Boolean(apiKey || obus.apiKey)) {
-        console.log({ apiKey, obus: obus.apiKey });
-        reject('Invalid API key.');
-        return;
-      }
 
       const headers = new Headers();
-      if (USE_API_KEY) {
+      if (apiKey) {
         headers.append('Authorization', `Basic ${btoa(apiKey || obus?.apiKey)}`);
       }
 

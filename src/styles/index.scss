@@ -13,7 +13,7 @@
 
     /* Track */
     ::-webkit-scrollbar-track {
-      @apply bg-transparent;
+      @apply bg-transparent bg-opacity-0;
     }
 
     /* Handle */
@@ -22,6 +22,18 @@
       border: 0.25rem solid rgba(0, 0, 0, 0);
       background-clip: padding-box;
     }
+  }
+}
+
+*:focus {
+  -webkit-tap-highlight-color: transparent;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+.focus {
+  &:focus-visible {
+    @apply rounded outline outline-2 outline-offset-2;
   }
 }
 
@@ -35,8 +47,9 @@ body {
   min-height: 100vh;
   min-height: 100svh;
 }
+
 #app {
-  @apply bg-electric-violet-950 px-5 py-5 text-slate-100;
+  @apply select-none bg-electric-violet-950 px-5 py-5 text-slate-100 sm:select-auto;
   max-width: 31.25rem;
   flex-grow: 1;
   width: 100%;
@@ -46,4 +59,82 @@ body {
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
+}
+
+.burger-icon span:nth-child(1) {
+  top: 0px;
+}
+.burger-icon span:nth-child(2),
+.burger-icon span:nth-child(3) {
+  top: 8px;
+}
+.burger-icon span:nth-child(4) {
+  top: 16px;
+}
+
+.burger-icon {
+  width: 25px;
+  height: 16px;
+  position: relative;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: 0.5s ease-in-out;
+  -moz-transition: 0.5s ease-in-out;
+  -o-transition: 0.5s ease-in-out;
+  transition: 0.5s ease-in-out;
+  cursor: pointer;
+  //transform: scale(0.3);
+}
+
+.burger-icon span {
+  @apply bg-electric-violet-200;
+  display: block;
+  position: absolute;
+  height: 4px;
+  width: 100%;
+  border-radius: 9px;
+  opacity: 1;
+  left: 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: 0.25s ease-in-out;
+  -moz-transition: 0.25s ease-in-out;
+  -o-transition: 0.25s ease-in-out;
+  transition: 0.25s ease-in-out;
+}
+
+.burger-icon.open span:nth-child(1) {
+  top: 18px;
+  width: 0%;
+  left: 50%;
+}
+
+.burger-icon.open.open span:nth-child(2) {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.burger-icon.open.open span:nth-child(3) {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.burger-icon.open.open span:nth-child(4) {
+  top: 18px;
+  width: 0%;
+  left: 50%;
+}
+
+button:focus-visible {
+  outline: 0.25rem;
+  outline-style: solid;
+  outline-offset: 2px;
 }

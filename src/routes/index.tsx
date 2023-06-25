@@ -1,7 +1,8 @@
-import { Header } from 'components';
-import { Footer } from 'components/Footer/Footer';
+import { Footer, Header, Nav } from 'components';
+import { Consumption } from 'features/consumption';
 import { Rates } from 'features/rates';
-import { Outlet, useRoutes } from 'react-router-dom';
+import { Settings } from 'features/settings';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 
 export const Routes = () => {
   const appRoutes = [
@@ -9,17 +10,22 @@ export const Routes = () => {
       element: <Layout />,
       children: [
         {
-          path: '/',
+          path: '/rates',
           element: <Rates />,
+        },
+        {
+          path: '/consumption',
+          element: <Consumption />,
+        },
+        {
+          path: '/charger',
+          element: <div className="my-6 rounded border border-amber-500 px-3 py-2 font-semibold text-amber-500">Coming Soon</div>,
         },
         {
           path: '/settings',
-          element: <>settings</>,
+          element: <Settings />,
         },
-        {
-          path: '*',
-          element: <Rates />,
-        },
+        { path: '*', element: <Navigate to="/rates" replace /> },
       ],
     },
   ];
@@ -32,8 +38,11 @@ export const Routes = () => {
 export const Layout = () => {
   return (
     <>
-      <main className="w-full">
-        <Header />
+      <main className="relative w-full">
+        <div className="flex justify-between">
+          <Header />
+          <Nav />
+        </div>
         <section className="h-full">
           <Outlet />
         </section>

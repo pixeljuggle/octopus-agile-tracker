@@ -42,6 +42,7 @@ module.exports = {
         },
         'electric-violet': {
           DEFAULT: '#5840FF',
+          10: '#c6c0f1',
           50: '#BCB3FF',
           100: '#B1A6FF',
           200: '#9B8DFF',

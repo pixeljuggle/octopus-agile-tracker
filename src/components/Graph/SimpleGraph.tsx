@@ -7,10 +7,12 @@ import { UnknownObject } from 'types';
 
 export type SimpleGraphPropTypes = {
   data: UnknownObject[];
+  dataKey: string;
+  unit: string;
   min: number;
   max: number;
 };
-export const SimpleGraph = ({ data, min, max }: SimpleGraphPropTypes) => {
+export const SimpleGraph = ({ data, dataKey, min, max, unit = '' }: SimpleGraphPropTypes) => {
   const [ref, rect] = useMeasure();
   const [now, setNow] = useState(new Date().getTime());
 
@@ -35,10 +37,10 @@ export const SimpleGraph = ({ data, min, max }: SimpleGraphPropTypes) => {
           cursor={{ stroke: '#5EEAF4', strokeWidth: 1.5 }}
           contentStyle={{ backgroundColor: '#111827' }}
           itemStyle={{ color: '#818cf8' }}
-          content={<ChartTooltip />}
+          content={<ChartTooltip dataKey={dataKey} unit={unit} />}
         />
         <ReferenceLine x={now} stroke="#94a3b8" strokeDasharray="3 3" label="" />
-        <Line type="stepAfter" dataKey="rate" stroke="#F484FA" strokeWidth={2} dot={false} activeDot={false} />
+        <Line type="stepAfter" dataKey={dataKey} stroke="#F484FA" strokeWidth={2} dot={false} activeDot={false} />
       </LineChart>
     </div>
   );
