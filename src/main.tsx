@@ -1,3 +1,4 @@
+import { RatesProvider } from 'features/rates/providers/RatesProvider';
 import { SettingsProvider } from 'features/settings/providers/SettingsProvider';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -9,7 +10,9 @@ ReactDOM.createRoot(document.getElementById('app') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <SettingsProvider>
-        <Routes />
+        <RatesProvider>
+          <Routes />
+        </RatesProvider>
       </SettingsProvider>
     </BrowserRouter>
   </React.StrictMode>

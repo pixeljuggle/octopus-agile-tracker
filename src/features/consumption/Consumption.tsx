@@ -5,7 +5,9 @@ import { ChevronsRight } from 'components/Icons/ChevronsRight';
 import dayjs from 'dayjs';
 import { ConsumptionTable } from 'features/consumption/components/ConsumptionTable';
 import { useSettings } from 'features/settings';
-import { useConsumption, GetConsumptionParamTypes, GetRatesParamTypes } from 'hooks/useConsumption';
+import { motion } from 'framer-motion';
+import { GetConsumptionParamTypes, useConsumption } from 'hooks/useConsumption';
+import { useVibrate } from 'hooks/useVibrate';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { UnknownObject } from 'types';
 import { minMax } from 'utils';
@@ -18,18 +20,30 @@ export const Consumption = () => {
     );
   }
 
-  const { consumption, getConsumption, getDaily, getRates } = useConsumption();
+  const { consumption, getConsumption, getDaily } = useConsumption();
   const [day, setDay] = useState(0);
+
+  const vibrate = useVibrate();
 
   const cols = [
     {
       path: 'date',
       label: 'Date',
       content: (row: UnknownObject, i: number) => (
-        <span className="flex items-center gap-2">
+        <button
+          className="flex items-center gap-2 rounded"
+          onClick={() => {
+            vibrate(50);
+            setDay(i);
+          }}
+        >
           {dayjs(row.date).format('D MMMM')}
-          {i === day ? <CalendarIcon className=" h-4 w-4" /> : null}
-        </span>
+          {i === day ? (
+            <motion.div layoutId="clendar-icon" transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}>
+              <CalendarIcon className=" h-4 w-4" />
+            </motion.div>
+          ) : null}
+        </button>
       ),
     },
     {
@@ -37,7 +51,12 @@ export const Consumption = () => {
       label: 'Consumption',
       thClassName: 'flex flex-row flex-nowrap items-center justify-end gap-3',
       className: 'flex flex-row flex-nowrap items-center justify-end gap-3',
-      content: (row: UnknownObject) => `${row.consumption} kW  £${row.cost}`,
+      content: (row: UnknownObject) => (
+        <span className="flex gap-3">
+          <p>{`${(Math.round(row.consumption * 10) / 10).toFixed(1)} kW`}</p>
+          <p className="font-semibold">{`£${row.cost.toFixed(2)}`}</p>
+        </span>
+      ),
     },
   ];
 
@@ -49,16 +68,17 @@ export const Consumption = () => {
     return consumption.filter((e: UnknownObject) => new Date(e.interval_start).getTime() >= start && new Date(e.interval_end).getTime() <= end);
   }, [consumption, day]);
 
-  useLayoutEffect(() => {
+  const fetchData = async () => {
     const daysToFetch = 10;
     const now = new Date();
     const start = new Date(new Date().setDate(now.getDate() - daysToFetch)).toISOString().split('T')[0];
     const end = new Date(new Date().setDate(now.getDate() - 1)).toISOString().split('T')[0];
 
     const consumptionOptions: GetConsumptionParamTypes = { page_size: 4322, period_from: `${start}T00:00:00`, period_to: `${end}T23:30:00` };
-    getConsumption(consumptionOptions);
-    const ratesOptions: GetRatesParamTypes = { page_size: 4322, period_from: `${start}T00:00:00`, period_to: `${end}T23:30:00` };
-    getRates(ratesOptions);
+    await getConsumption(consumptionOptions);
+  };
+  useLayoutEffect(() => {
+    fetchData();
   }, []);
 
   return (
@@ -68,7 +88,10 @@ export const Consumption = () => {
           <button
             className=" flex h-7 w-7 items-center justify-center rounded align-middle text-electric-violet-10 hover:bg-electric-violet-900 disabled:opacity-20"
             disabled={day === getDaily().length - 1}
-            onClick={() => setDay((prev) => prev + 1)}
+            onClick={() => {
+              vibrate(20);
+              setDay((prev) => prev + 1);
+            }}
           >
             <ChevronsLeft className="h-4 w-4 text-electric-violet-10" />
           </button>
@@ -79,7 +102,10 @@ export const Consumption = () => {
           <button
             className=" flex h-7 w-7 items-center justify-center rounded align-middle text-electric-violet-10 hover:bg-electric-violet-900 disabled:opacity-20"
             disabled={day === 0}
-            onClick={() => setDay((prev) => prev - 1)}
+            onClick={() => {
+              vibrate(20);
+              setDay((prev) => prev - 1);
+            }}
           >
             <ChevronsRight className="h-4 w-4 text-electric-violet-10" />
           </button>

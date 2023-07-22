@@ -1,7 +1,8 @@
 import { Spinner } from 'components';
 import { CheckIcon } from 'components/Icons/CheckIcon';
+import { useRates } from 'features/rates/providers/RatesProvider';
 import { useSettings } from 'features/settings/providers/SettingsProvider';
-import { useRates } from 'hooks/useRates';
+import { useVibrate } from 'hooks/useVibrate';
 import { useState } from 'react';
 
 export const AddApiKey = () => {
@@ -13,9 +14,11 @@ export const AddApiKey = () => {
   const [apiKey, setApiKey] = useState(obus?.apiKey ?? '');
   const [submitted, setSubmitted] = useState(false);
 
+  const vibrate = useVibrate();
+
   const checkApiKey = async () => {
     setLoading(true);
-    await getRates(1, apiKey)
+    await getRates({ page_size: 1, apiKey: apiKey })
       .then(() => {
         setError('');
         onChangeHandler('apiKey', apiKey);
@@ -27,6 +30,7 @@ export const AddApiKey = () => {
       .finally(() => {
         setLoading(false);
         setSubmitted(true);
+        vibrate([20, 200, 20]);
       });
   };
 

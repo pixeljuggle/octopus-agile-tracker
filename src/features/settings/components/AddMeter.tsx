@@ -2,6 +2,7 @@ import { Spinner } from 'components';
 import { CheckIcon } from 'components/Icons/CheckIcon';
 import { useSettings } from 'features/settings/providers/SettingsProvider';
 import { useConsumption } from 'hooks/useConsumption';
+import { useVibrate } from 'hooks/useVibrate';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { UnknownObject } from 'types';
 
@@ -14,6 +15,8 @@ export const AddMeter = () => {
   const [mpan, setMpan] = useState(obus?.mpan ?? '');
   const [serial, setSerial] = useState(obus?.serial ?? '');
   const [submitted, setSubmitted] = useState(false);
+
+  const vibrate = useVibrate();
 
   const checkApiKey = async () => {
     setLoading(true);
@@ -33,6 +36,7 @@ export const AddMeter = () => {
       .finally(() => {
         setLoading(false);
         setSubmitted(true);
+        vibrate([20, 200, 20]);
       });
   };
 

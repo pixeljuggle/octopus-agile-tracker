@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Popover, PopoverContent, PopoverTrigger } from 'components/Popover/Popover';
+import { useVibrate } from 'hooks/useVibrate';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UnknownObject } from 'types';
@@ -11,7 +12,10 @@ export const Nav = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const vibrate = useVibrate();
+
   const toggleOpen = () => {
+    vibrate(20);
     setOpen((prev) => !prev);
   };
 
@@ -58,6 +62,7 @@ export const Nav = () => {
                     key={i}
                     onClick={() => {
                       if (active) return;
+                      vibrate(50);
                       navigate(e.to);
                       setOpen(false);
                     }}
