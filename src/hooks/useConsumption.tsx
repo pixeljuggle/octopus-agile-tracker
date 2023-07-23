@@ -2,8 +2,7 @@
 import dayjs from 'dayjs';
 import { useRates } from 'features/rates/providers/RatesProvider';
 import { useSettings } from 'features/settings/providers/SettingsProvider';
-import { useLocalStorage } from 'hooks/useLocalStorage';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { UnknownObject } from 'types';
 
 export type GetConsumptionParamTypes = {
@@ -19,7 +18,8 @@ export type GetRatesParamTypes = {
   page_size?: number;
 };
 export const useConsumption = () => {
-  const [consumption, setConsumption] = useLocalStorage('consumption', { results: [] });
+  const [consumption, setConsumption] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const rates = useRates();
 
@@ -28,7 +28,7 @@ export const useConsumption = () => {
 
   const getConsumption = async (options: GetConsumptionParamTypes = { period_from: '', period_to: '', page_size: 96, mpan: '', serial: '' }) => {
     const { period_from = '', period_to = '', page_size = 96 } = options;
-
+    setLoading(true);
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // eslint-disable-next-line no-extra-boolean-cast
@@ -75,19 +75,21 @@ export const useConsumption = () => {
             };
 
             console.log({ mutate });
-            setConsumption(mutate);
+            setConsumption(mutate.results);
             resolve(res?.results);
           } else {
             reject(res?.detail ?? 'Something went wrong!');
           }
         })
-        .catch((error) => reject(error?.message ?? error));
+        .catch((error) => reject(error?.message ?? error))
+        .finally(() => {
+          setLoading(false);
+        });
     });
   };
 
   const getDaily = useCallback(() => {
-    const data = consumption?.results ?? [];
-    const daily = data.reduce((prev: UnknownObject, curr: UnknownObject) => {
+    const daily = consumption.reduce((prev: UnknownObject, curr: UnknownObject) => {
       const date = new Date(new Date(curr.interval_start).toDateString()).getTime();
       const prevUsage = prev[date]?.usage || 0;
       const usage = prevUsage + curr.consumption;
@@ -109,5 +111,5 @@ export const useConsumption = () => {
     });
   }, [consumption]);
 
-  return { consumption: consumption?.results ?? [], getConsumption, getDaily };
+  return { consumption, getConsumption, getDaily, loading };
 };

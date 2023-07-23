@@ -1,13 +1,13 @@
 import { Spinner } from 'components';
 import { CheckIcon } from 'components/Icons/CheckIcon';
-import { useRates } from 'features/rates/providers/RatesProvider';
 import { useSettings } from 'features/settings/providers/SettingsProvider';
+import { useGetRates } from 'hooks/useGetRates';
 import { useVibrate } from 'hooks/useVibrate';
 import { useState } from 'react';
 
 export const AddApiKey = () => {
   const { obus, onChangeHandler } = useSettings();
-  const { getRates } = useRates();
+  const { getRates } = useGetRates();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

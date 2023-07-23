@@ -20,8 +20,8 @@ export const Nav = () => {
   };
 
   const navItems = [
-    { label: 'Agile Rates', icon: <MoneyIcon />, to: '/rates' },
-    { label: 'Consumption', icon: <TrendingUpIcon />, to: '/consumption' },
+    { label: 'Agile Rates', icon: <TrendingUpIcon />, to: '/rates' },
+    { label: 'Consumption', icon: <MoneyIcon />, to: '/consumption' },
     { label: 'EV Charger', icon: <FuelIcon />, to: '/charger' },
     { label: 'Settings', icon: <SettingsIcon />, to: '/settings' },
   ];

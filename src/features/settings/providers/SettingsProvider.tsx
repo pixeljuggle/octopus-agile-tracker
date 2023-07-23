@@ -10,7 +10,7 @@ type ContextValueType = {
   setError: (e: any) => void;
   onChangeHandler: (key: string, value: string) => void;
 };
-const initObus = { apiKey: '', mpan: '', serial: '' };
+const initObus = { apiKey: '', mpan: '', serial: '', charger: '', chargerUsername: '', chargerPassword: '', chargerSession: {} };
 
 const initContext: ContextValueType = {
   obus: initObus,
@@ -25,7 +25,7 @@ export const SettingsContext = createContext(initContext);
 type ProviderChildrenType = { children?: ChildrenType };
 
 export const SettingsProvider = ({ children }: ProviderChildrenType): ReactElement => {
-  const [obus, setObus] = useLocalStorage('obus', { apiKey: '', mpan: '', serial: '' });
+  const [obus, setObus] = useLocalStorage('obus', initObus);
   const [error, setError] = useState('');
 
   const onChangeHandler = (key: string, value: string) => {

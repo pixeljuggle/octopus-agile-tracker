@@ -6,12 +6,14 @@ import { useVibrate } from 'hooks/useVibrate';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { UnknownObject } from 'types';
 
+const INITIAL_MESSAGE = 'Requires an Octopus Energy API key';
+
 export const AddMeter = () => {
   const { obus, setObus } = useSettings();
   const { getConsumption } = useConsumption();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('Requires an Octopus Energy account');
+  const [error, setError] = useState(INITIAL_MESSAGE);
   const [mpan, setMpan] = useState(obus?.mpan ?? '');
   const [serial, setSerial] = useState(obus?.serial ?? '');
   const [submitted, setSubmitted] = useState(false);
@@ -41,10 +43,10 @@ export const AddMeter = () => {
   };
 
   useLayoutEffect(() => {
-    if (obus.apiKey && error === 'Requires an Octopus Energy account') setError('');
+    if (obus.apiKey && error === INITIAL_MESSAGE) setError('');
   }, []);
   useEffect(() => {
-    if (obus.apiKey && error === 'Requires an Octopus Energy account') setError('');
+    if (obus.apiKey && error === INITIAL_MESSAGE) setError('');
   }, [obus]);
 
   const onSave = async () => {

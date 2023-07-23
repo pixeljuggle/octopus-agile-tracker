@@ -24,7 +24,11 @@ export const RatesProvider = ({ children }: ProviderChildrenType): ReactElement 
   const { data, getRates, loading } = useGetRates();
 
   useEffect(() => {
-    getRates({ page_size: 1488 });
+    const daysToFetch = 32;
+    const now = new Date();
+    const start = new Date(new Date().setDate(now.getDate() - daysToFetch)).toISOString().split('T')[0];
+
+    getRates({ period_from: start, page_size: 1700 });
   }, []);
 
   const contextValue = useMemo(
@@ -50,9 +54,21 @@ export const useRates = () => {
     }
   }, [data]);
 
-  const { min, max } = minMax(getTodaysRates(), 'value_inc_vat');
+  const { min, max } = minMax(
+    getTodaysRates().filter((e: UnknownObject) => {
+      const now = new Date().getTime();
+      return new Date(e.valid_to).getTime() > now;
+    }),
+    'value_inc_vat'
+  );
 
-  const avg = average(getTodaysRates(), 'value_inc_vat');
+  const avg = average(
+    getTodaysRates().filter((e: UnknownObject) => {
+      const now = new Date().getTime();
+      return new Date(e.valid_to).getTime() > now;
+    }),
+    'value_inc_vat'
+  );
 
   return {
     loading,

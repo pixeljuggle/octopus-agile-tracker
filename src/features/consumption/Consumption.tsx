@@ -2,6 +2,7 @@ import { SimpleGraph } from 'components';
 import { CalendarIcon } from 'components/Icons/CalendarIcon';
 import { ChevronsLeft } from 'components/Icons/ChevronsLeft';
 import { ChevronsRight } from 'components/Icons/ChevronsRight';
+import { WaveLoader } from 'components/Spinner/WaveLoader';
 import dayjs from 'dayjs';
 import { ConsumptionTable } from 'features/consumption/components/ConsumptionTable';
 import { useSettings } from 'features/settings';
@@ -14,13 +15,13 @@ import { minMax } from 'utils';
 
 export const Consumption = () => {
   const { obus } = useSettings();
-  if (Object.values(obus).some((e) => !e)) {
+  if (!obus.apiKey || !obus.mpan || !obus.serial) {
     return (
       <div className="my-6 rounded border border-amber-500 px-3 py-2 font-semibold text-amber-500">API Key and Meter Point required for consumption data</div>
     );
   }
 
-  const { consumption, getConsumption, getDaily } = useConsumption();
+  const { consumption, getConsumption, getDaily, loading } = useConsumption();
   const [day, setDay] = useState(0);
 
   const vibrate = useVibrate();
@@ -69,7 +70,7 @@ export const Consumption = () => {
   }, [consumption, day]);
 
   const fetchData = async () => {
-    const daysToFetch = 10;
+    const daysToFetch = 29;
     const now = new Date();
     const start = new Date(new Date().setDate(now.getDate() - daysToFetch)).toISOString().split('T')[0];
     const end = new Date(new Date().setDate(now.getDate() - 1)).toISOString().split('T')[0];
@@ -82,44 +83,52 @@ export const Consumption = () => {
   }, []);
 
   return (
-    <div className="" id="content">
-      {consumption.length ? (
-        <div id="dateNav" className="flex gap-2">
-          <button
-            className=" flex h-7 w-7 items-center justify-center rounded align-middle text-electric-violet-10 hover:bg-electric-violet-900 disabled:opacity-20"
-            disabled={day === getDaily().length - 1}
-            onClick={() => {
-              vibrate(20);
-              setDay((prev) => prev + 1);
-            }}
-          >
-            <ChevronsLeft className="h-4 w-4 text-electric-violet-10" />
-          </button>
-          <span className="flex items-center gap-2  rounded text-sm text-electric-violet-10">
-            <CalendarIcon className=" h-4 w-4" />
-            <p>{dayjs(getDaily()[day]?.date).format('D MMMM')}</p>
-          </span>
-          <button
-            className=" flex h-7 w-7 items-center justify-center rounded align-middle text-electric-violet-10 hover:bg-electric-violet-900 disabled:opacity-20"
-            disabled={day === 0}
-            onClick={() => {
-              vibrate(20);
-              setDay((prev) => prev - 1);
-            }}
-          >
-            <ChevronsRight className="h-4 w-4 text-electric-violet-10" />
-          </button>
+    <>
+      {loading ? (
+        <div className="flex h-full w-full items-center justify-center align-middle" id="loading">
+          <WaveLoader className="h-20 w-20 fill-heliotrope-500" />
         </div>
-      ) : null}
-
-      <SimpleGraph data={filterConsumption()} unit="kW" dataKey="consumption" {...minMax(filterConsumption(), 'consumption')} />
-      {Array.isArray(consumption) && consumption.length ? (
-        <>
-          <ConsumptionTable cols={cols} data={getDaily()} />
-        </>
       ) : (
-        <div className="my-6 rounded border border-amber-500 px-3 py-2 font-semibold text-amber-500">No Data</div>
+        <div className="" id="content">
+          {consumption.length ? (
+            <div id="dateNav" className="flex gap-2">
+              <button
+                className=" flex h-7 w-7 items-center justify-center rounded align-middle text-electric-violet-10 hover:bg-electric-violet-900 disabled:opacity-20"
+                disabled={day === getDaily().length - 1}
+                onClick={() => {
+                  vibrate(20);
+                  setDay((prev) => prev + 1);
+                }}
+              >
+                <ChevronsLeft className="h-4 w-4 text-electric-violet-10" />
+              </button>
+              <span className="flex items-center gap-2  rounded text-sm text-electric-violet-10">
+                <CalendarIcon className=" h-4 w-4" />
+                <p>{dayjs(getDaily()[day]?.date).format('D MMMM')}</p>
+              </span>
+              <button
+                className=" flex h-7 w-7 items-center justify-center rounded align-middle text-electric-violet-10 hover:bg-electric-violet-900 disabled:opacity-20"
+                disabled={day === 0}
+                onClick={() => {
+                  vibrate(20);
+                  setDay((prev) => prev - 1);
+                }}
+              >
+                <ChevronsRight className="h-4 w-4 text-electric-violet-10" />
+              </button>
+            </div>
+          ) : null}
+
+          <SimpleGraph data={filterConsumption()} unit="kW" dataKey="consumption" {...minMax(filterConsumption(), 'consumption')} />
+          {Array.isArray(consumption) && consumption.length ? (
+            <>
+              <ConsumptionTable cols={cols} data={getDaily()} />
+            </>
+          ) : (
+            <div className="my-6 rounded border border-amber-500 px-3 py-2 font-semibold text-amber-500">No Data</div>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
