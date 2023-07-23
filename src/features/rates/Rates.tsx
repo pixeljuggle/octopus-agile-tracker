@@ -1,14 +1,12 @@
 import { ArrowDownIcon, ArrowUpIcon, SimpleGraph, TrafficLightRate } from 'components';
-import { WaveLoader } from 'components/Spinner/WaveLoader';
 import dayjs from 'dayjs';
 import { RatesMinMax } from 'features/rates/components/RatesMinMax';
 import { RatesTable } from 'features/rates/components/RatesTable';
 import { useRates } from 'features/rates/providers/RatesProvider';
-import { AnimatePresence, motion } from 'framer-motion';
 import { UnknownObject } from 'types';
 
 export const Rates = () => {
-  const { getTodaysRates, min, max, avg, loading } = useRates();
+  const { getTodaysRates, min, max, avg } = useRates();
 
   const renderArrows = (value: number) => {
     if (value === min) {

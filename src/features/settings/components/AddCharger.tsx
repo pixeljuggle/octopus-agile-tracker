@@ -1,7 +1,6 @@
 import { Spinner } from 'components';
 import { CheckIcon } from 'components/Icons/CheckIcon';
 import { useSettings } from 'features/settings/providers/SettingsProvider';
-import { useConsumption } from 'hooks/useConsumption';
 import { useEvCharger } from 'hooks/useEvCharger';
 import { useVibrate } from 'hooks/useVibrate';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -11,43 +10,20 @@ const INITIAL_MESSAGE = 'Requires an Octopus Energy API key';
 
 export const AddCharger = () => {
   const { obus, setObus } = useSettings();
-  const { getConsumption } = useConsumption();
 
-  const { charger, chargerUsername, chargerPassword } = obus;
+  const { charger, chargerUsername, chargerPassword, chargerSession } = obus;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(INITIAL_MESSAGE);
 
   const [submitted, setSubmitted] = useState(false);
 
-  const { sessions, authenticate, refreshToken, getChargers, getSessions, getLastSession } = useEvCharger();
+  const { authenticate, getChargers } = useEvCharger();
 
   const vibrate = useVibrate();
 
-  const checkApiKey = async () => {
-    setLoading(true);
-    await getConsumption({
-      page_size: 1,
-      mpan,
-      serial,
-    })
-      .then(() => {
-        setError('');
-        setObus((prev: UnknownObject) => ({ ...prev, mpan, serial }));
-      })
-      .catch((e) => {
-        setError(e?.message ?? e);
-        console.log(e);
-      })
-      .finally(() => {
-        setLoading(false);
-        setSubmitted(true);
-        vibrate([20, 200, 20]);
-      });
-  };
-
   const handleInput = (key = '', value = '') => {
-    setObus((prev) => ({ ...prev, [key]: value }));
+    setObus((prev: UnknownObject) => ({ ...prev, [key]: value }));
   };
 
   const onSave = async () => {
@@ -57,12 +33,15 @@ export const AddCharger = () => {
         await getChargers();
         setError('');
       })
-      .catch((e) => setError(e?.message ?? 'Something went wrong'))
-      .finally(() => {
-        setLoading(false);
-        setSubmitted(true);
-        vibrate([20, 200, 20]);
-      });
+      .catch((e) => setError(e?.message ?? 'Something went wrong'));
+
+    if (chargerSession?.accessToken) {
+      await getChargers()
+        .then(() => setSubmitted(true))
+        .catch((e) => setError(e?.message ?? 'Something went wrong'));
+    }
+    setLoading(false);
+    vibrate([20, 200, 20]);
   };
 
   useLayoutEffect(() => {
@@ -135,24 +114,6 @@ export const AddCharger = () => {
           ) : (
             <p className="h-6">Save EV Charger</p>
           )}
-        </button>
-
-        {/* ###### */}
-
-        <button
-          onClick={refreshToken}
-          className="flex rounded bg-heliotrope-500 px-3 py-2 font-semibold text-slate-800 hover:bg-heliotrope-400 focus-visible:outline-heliotrope-500 disabled:opacity-20 disabled:hover:bg-heliotrope-500 "
-        >
-          refreshToken
-        </button>
-
-        {/* ###### */}
-
-        <button
-          onClick={getSessions}
-          className="flex rounded bg-heliotrope-500 px-3 py-2 font-semibold text-slate-800 hover:bg-heliotrope-400 focus-visible:outline-heliotrope-500 disabled:opacity-20 disabled:hover:bg-heliotrope-500 "
-        >
-          getSessions
         </button>
       </div>
     </section>
